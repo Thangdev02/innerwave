@@ -11,10 +11,10 @@ const Header = () => {
 
         {/* Navigation */}
         <nav className="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-700">
-          <a href="#" className="hover:text-purple-600 transition">Home</a>
-          <a href="#" className="hover:text-purple-600 transition">Journey Tracker</a>
+          <a href="/" className="hover:text-purple-600 transition">Home</a>
+          <a href="/journey-tracker" className="hover:text-purple-600 transition">Journey Tracker</a>
           <a href="#" className="hover:text-purple-600 transition">Inner Space</a>
-          <a href="#" className="hover:text-purple-600 transition">Healing Stories</a>
+          <a href="/blog" className="hover:text-purple-600 transition">Healing Stories</a>
           <a href="#" className="hover:text-purple-600 transition">Contact</a>
           <a
             href="#"
