@@ -7,22 +7,26 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import JourneyTracker from './pages/JourneyTracker'
 import BlogPage from './pages/BlogPage'
 import BlogDetail from './pages/BlogDetail'
+import InnerSpace from './pages/InnerSpace'
+import Footer from './layouts/Footer'
+import About from './pages/About'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
+    <BrowserRouter>
       <Header />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/journey-tracker" element={<JourneyTracker />} />
-          <Route path="/blog" element={<BlogPage />} />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/journey-tracker" element={<JourneyTracker />} />
+        <Route path="/inner-space" element={<InnerSpace />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/about" element={<About />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
-        </Routes>
-      </BrowserRouter>
-    </>
+      </Routes>
+      <Footer/>
+    </BrowserRouter>
   )
 }
 

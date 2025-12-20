@@ -47,46 +47,93 @@ export default function BlogDetail() {
 
   if (!post) {
     return (
-      <div className="text-center py-40 text-gray-500">Bài viết không tồn tại.</div>
+      <div className="min-h-screen flex items-center justify-center ">
+        <div className="text-center text-white">
+          <p className="text-xl mb-4">Bài viết không tồn tại.</p>
+          <Link to="/blog" className="text-[#5cd9aa] hover:underline">
+            ← Quay lại trang Blog
+          </Link>
+        </div>
+      </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#fffdf9] py-20 px-6">
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
-        className="max-w-4xl mx-auto"
-      >
-        <div
-          className="rounded-[32px] p-10 shadow-lg border border-[#f3ead4]/70"
-          style={{
-            background:
-              "linear-gradient(135deg, #fff8f0 0%, #fdf3d4 50%, #f7eedc 100%)",
-          }}
-        >
-          <Link
-            to="/blog"
-            className="text-[#2f7041] font-medium hover:underline mb-6 inline-block"
+    <main className="min-h-screen relative overflow-hidden py-16 px-6 md:px-10 pt-48">
+      {/* Background image */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src="/backgroundBlog.png"
+          alt="Healing background"
+          className="w-full h-full object-cover"
+        />
+      </div>
+
+      {/* Decorative wave at bottom */}
+      <div className="absolute bottom-0 left-0 w-full z-[1]">
+        <svg viewBox="0 0 1440 320" className="w-full">
+          <path
+            fill="#ffffff"
+            fillOpacity="0.3"
+            d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+          ></path>
+        </svg>
+      </div>
+
+      <div className="relative z-10 max-w-4xl mx-auto">
+        {/* Content card with overlay */}
+        <div className="relative">
+          {/* Overlay background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#1a2332]/85 via-[#2a3f5f]/75 to-[#1a2332]/85 backdrop-blur-md rounded-2xl" />
+
+          {/* Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="relative p-8 md:p-12"
           >
-            ← Quay lại trang Blog
-          </Link>
+            {/* Back button */}
+            <Link
+              to="/blog"
+              className="inline-flex items-center gap-2 text-[#5cd9aa] font-medium hover:text-[#4aaee0] transition mb-8"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Quay lại trang Blog
+            </Link>
 
-          <h1 className="text-3xl font-bold text-[#3b3426] mb-4">{post.title}</h1>
-          <p className="text-sm text-[#9b8f75] mb-6">{post.date}</p>
+            {/* Title */}
+            <h1 className="text-3xl md:text-4xl font-bold text-[#5cd9aa] mb-3 leading-tight">
+              {post.title}
+            </h1>
+            <p className="text-sm text-white/60 mb-8">{post.date}</p>
 
-          <img
-            src={post.image}
-            alt={post.title}
-            className="w-full h-80 object-cover rounded-2xl mb-8"
-          />
+            {/* Main content card (white box in the design) */}
+            <div className=" backdrop-blur-sm rounded-2xl p-8 md:p-10 ">
+              {/* Image */}
+              <img
+                src={post.image}
+                alt={post.title}
+                className="w-full h-64 md:h-80 object-cover rounded-xl mb-8"
+              />
 
-          <div className="text-[#4b4537] text-base leading-relaxed whitespace-pre-line">
-            {post.content}
-          </div>
+              {/* Text content */}
+              <div className="text-white text-base md:text-lg leading-relaxed whitespace-pre-line">
+                {post.content}
+              </div>
+            </div>
+
+            {/* Optional: Share or action buttons */}
+            {/* <div className="mt-8 flex justify-center gap-4">
+              <button className="px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-xl hover:bg-white/20 transition">
+                Chia sẻ câu chuyện
+              </button>
+            </div> */}
+          </motion.div>
         </div>
-      </motion.div>
+      </div>
     </main>
   );
 }

@@ -40,38 +40,84 @@ const HomePage = () => {
 
       {showMain && (
         <>
-          {/* Header */}
-          <header className="fixed top-0 left-0 right-0 bg-white/70 backdrop-blur-lg z-50 border-b border-white/30">
-            <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-300 via-purple-300 to-blue-300 flex items-center justify-center shadow-md">
-                <span className="text-xl font-bold text-white">TS</span>
-              </div>
-              <nav className="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-700">
-                <a href="#" className="hover:text-purple-600 transition">Home</a>
-                <a href="#" className="hover:text-purple-600 transition">Journey Tracker</a>
-                <a href="#" className="hover:text-purple-600 transition">Inner Space</a>
-                <a href="#" className="hover:text-purple-600 transition">Healing Stories</a>
-                <a href="#" className="hover:text-purple-600 transition">Contact</a>
-                <a href="#" className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-5 py-2 rounded-full text-sm font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300">
-                  SHOP NOW
-                </a>
-              </nav>
-            </div>
-          </header>
+      
 
-          {/* Hero – GIỐNG HỆT INNER WAVE SAU INTRO */}
+          {/* Hero – GRADIENT VỚI CÁC ĐỐM MÀU TRÒN GIỐNG FIGMA */}
           <section className="relative h-screen flex items-center justify-center overflow-hidden pt-16">
+            {/* Base background - xanh dương chủ đạo */}
             <div 
               className="absolute inset-0"
               style={{
-                background: "linear-gradient(135deg, #4f46e5 0%, #06b6d4 50%, #ec4899 100%)",
+                background: "#1e40af",
+              }}
+            />
+            
+            {/* Đốm xanh dương đậm bên trái */}
+            <div 
+              className="absolute top-0 left-0 w-[800px] h-[800px]"
+              style={{
+                background: "radial-gradient(circle, #1e3a8a 0%, transparent 70%)",
+                transform: "translate(-30%, -20%)",
+              }}
+            />
+
+            {/* Đốm tím ở giữa trái */}
+            <div 
+              className="absolute top-1/4 left-1/4 w-[700px] h-[700px]"
+              style={{
+                background: "radial-gradient(circle, #7c3aed 0%, transparent 65%)",
+                transform: "translate(-50%, -20%)",
+              }}
+            />
+
+            {/* Đốm tím hồng ở giữa */}
+            <div 
+              className="absolute top-1/3 left-1/2 w-[600px] h-[600px]"
+              style={{
+                background: "radial-gradient(circle, #a855f7 0%, transparent 60%)",
+                transform: "translate(-50%, -30%)",
+              }}
+            />
+
+            {/* Đốm hồng đỏ bên phải */}
+            <div 
+              className="absolute top-0 right-0 w-[900px] h-[900px]"
+              style={{
+                background: "radial-gradient(circle, #dc2626 0%, transparent 70%)",
+                transform: "translate(35%, -25%)",
+              }}
+            />
+
+            {/* Đốm xanh lá góc dưới phải */}
+            <div 
+              className="absolute bottom-0 right-0 w-[750px] h-[750px]"
+              style={{
+                background: "radial-gradient(circle, #10b981 0%, transparent 65%)",
+                transform: "translate(30%, 40%)",
+              }}
+            />
+
+            {/* Đốm xanh cyan ở giữa phải */}
+            <div 
+              className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px]"
+              style={{
+                background: "radial-gradient(circle, #06b6d4 0%, transparent 55%)",
+                transform: "translate(20%, 20%)",
+              }}
+            />
+
+            {/* Overlay mờ để blend các màu lại */}
+            <div 
+              className="absolute inset-0"
+              style={{
+                background: "linear-gradient(135deg, rgba(30, 58, 138, 0.3) 0%, rgba(124, 58, 237, 0.2) 30%, rgba(168, 85, 247, 0.2) 50%, rgba(220, 38, 38, 0.3) 70%, rgba(16, 185, 129, 0.2) 100%)",
+                mixBlendMode: "overlay",
               }}
             />
 
             <div className="relative z-10 text-center text-white px-6">
               <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
-                INNER
-                  WAVE
+                INNER WAVE
               </h1>
             </div>
           </section>
