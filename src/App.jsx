@@ -10,6 +10,7 @@ import BlogDetail from './pages/BlogDetail'
 import InnerSpace from './pages/InnerSpace'
 import Footer from './layouts/Footer'
 import About from './pages/About'
+import ShopNow from './pages/ShopNow'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -23,6 +24,7 @@ function App() {
         <Route path="/inner-space" element={<InnerSpace />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/about" element={<About />} />
+        <Route path="/shop" element={<ShopNow />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
       </Routes>
       <Footer/>
