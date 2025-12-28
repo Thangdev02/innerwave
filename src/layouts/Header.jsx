@@ -1,8 +1,25 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import authService from "../services/authService";
 
 const Header = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  useEffect(() => {
+    // Kiểm tra trạng thái đăng nhập khi component mount
+    const currentUser = authService.getCurrentUser();
+    setUser(currentUser);
+  }, []);
+
+  const handleLogout = () => {
+    authService.logout();
+    setUser(null);
+    setShowDropdown(false);
+    navigate('/');
+  };
 
   return (
     <header className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-8xl">
@@ -76,6 +93,41 @@ const Header = () => {
               SHOP NOW
             </Link>
           </nav>
+
+          {/* User Section */}
+          <div className="hidden md:flex items-center">
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setShowDropdown(!showDropdown)}
+                  className="flex items-center space-x-2 text-gray-900 font-bold hover:text-[#5cd9aa] transition-colors"
+                >
+                  <span>{user.firstName} {user.lastName}</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {showDropdown && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 border border-gray-200">
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    >
+                      Đăng xuất
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                to="/auth"
+                className="px-6 py-2 bg-[#5cd9aa] text-white font-bold rounded-full hover:bg-[#4bc799] transition-colors shadow-md"
+              >
+                LOGIN
+              </Link>
+            )}
+          </div>
 
           {/* Mobile Menu Button */}
           <button className="md:hidden text-gray-900 hover:text-[#5cd9aa] transition">

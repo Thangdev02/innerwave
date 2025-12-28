@@ -1,60 +1,86 @@
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-
-const posts = [
-  {
-    id: "1",
-    title: "Khi Những Lá Thư Kể Câu Chuyện Của Chúng Ta",
-    date: "22 tháng 10, 2025",
-    image:
-      "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1200",
-    content: `
-Có một điều mà Puzzles luôn biết ơn — đó là mỗi ngày, chiếc hộp thư nhỏ của tụi mình lại nhận thêm vài dòng tâm sự từ khắp nơi. Mỗi lá thư là một câu chuyện nhỏ, và mỗi câu chuyện là một mảnh ghép thật đẹp của tuổi trẻ.
-
-"Em không biết có nên tiếp tục cố gắng nữa không. Mọi người nói em mạnh mẽ, nhưng đôi khi em chỉ muốn có ai đó bảo rằng em có quyền yếu đuối một chút."
-
-Những dòng chia sẻ như thế khiến Lan và mọi người trong đội ngũ Puzzles tin rằng, chữa lành không phải điều to tát — đôi khi, nó bắt đầu chỉ từ việc viết ra điều mình đang cảm thấy.
-
-Puzzles sẽ không thể đăng tải hết tất cả những lá thư tuyệt vời ấy, nhưng tụi mình muốn một phần của mỗi câu chuyện vẫn được lan tỏa – để ai đó, ở một góc nhỏ khác của thế giới, cũng có thể tìm thấy sự đồng cảm.`,
-  },
-  {
-    id: "2",
-    title: "Puzzles Recap: Một Ngày Ở Mái Ấm Huynh Đệ Như Nghĩa",
-    date: "22 tháng 10, 2025",
-    image:
-      "https://images.unsplash.com/photo-1541692641319-1e2e46b8a96e?w=1200",
-    content: `
-Có những chuyến đi không chỉ để trao tặng, mà còn để nhận lại – những nụ cười, những bài học về tình thương, và cả sự biết ơn giản dị.
-
-Ngày hôm ấy, tụi mình đã có dịp trò chuyện cùng các em nhỏ ở Mái Ấm Huynh Đệ Như Nghĩa. Những ánh mắt sáng rực, những tiếng cười trong trẻo khiến ai nấy đều cảm thấy được tiếp thêm năng lượng.`,
-  },
-  {
-    id: "3",
-    title: "Lan và Hành Trình Cùng Puzzles: Khi Chữa Lành Bắt Đầu Từ Một Lá Thư",
-    date: "22 tháng 10, 2025",
-    image:
-      "https://images.unsplash.com/photo-1528740561666-dc2479dc08ab?w=1200",
-    content: `
-Nếu ai hỏi Puzzles bắt đầu từ đâu, Lan – người sáng lập dự án – sẽ nói rằng: từ một chiếc hộp thư nhỏ. Một nơi để mọi người viết ra điều mình chẳng thể nói.
-
-Câu chuyện ấy đã truyền cảm hứng để Puzzles trở thành cầu nối của hàng trăm bức thư và hàng ngàn trái tim.`,
-  },
-];
+import postService from "../services/postService";
 
 export default function BlogDetail() {
   const { id } = useParams();
-  const post = posts.find((p) => p.id === id);
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  if (!post) {
+  useEffect(() => {
+    fetchPost();
+  }, [id]);
+
+  const fetchPost = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      const data = await postService.getPostById(id);
+      setPost(data);
+      
+      // Tăng view count
+      await postService.incrementViewCount(id);
+    } catch (err) {
+      console.error("Error loading post:", err);
+      setError("Không thể tải bài viết. Vui lòng thử lại sau.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("vi-VN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center ">
-        <div className="text-center text-white">
-          <p className="text-xl mb-4">Bài viết không tồn tại.</p>
-          <Link to="/blog" className="text-[#5cd9aa] hover:underline">
-            ← Quay lại trang Blog
-          </Link>
+      <main className="min-h-screen relative overflow-hidden py-16 px-6 md:px-10 pt-48">
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/backgroundBlog.png"
+            alt="Healing background"
+            className="w-full h-full object-cover"
+          />
         </div>
-      </div>
+        <div className="relative z-10 flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#5cd9aa] border-t-transparent"></div>
+            <p className="text-white mt-4">Đang tải bài viết...</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (error || !post) {
+    return (
+      <main className="min-h-screen relative overflow-hidden py-16 px-6 md:px-10 pt-48">
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/backgroundBlog.png"
+            alt="Healing background"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="relative z-10 flex items-center justify-center min-h-[60vh]">
+          <div className="text-center text-white">
+            <p className="text-xl mb-4">{error || "Bài viết không tồn tại."}</p>
+            <Link
+              to="/blog"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#5cd9aa] text-white rounded-xl hover:bg-[#4aaee0] transition"
+            >
+              ← Quay lại trang Blog
+            </Link>
+          </div>
+        </div>
+      </main>
     );
   }
 
@@ -108,29 +134,70 @@ export default function BlogDetail() {
             <h1 className="text-3xl md:text-4xl font-bold text-[#5cd9aa] mb-3 leading-tight">
               {post.title}
             </h1>
-            <p className="text-sm text-white/60 mb-8">{post.date}</p>
 
-            {/* Main content card (white box in the design) */}
-            <div className=" backdrop-blur-sm rounded-2xl p-8 md:p-10 ">
+            {/* Meta info */}
+            <div className="flex items-center gap-4 text-sm text-white/60 mb-8">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#5cd9aa] to-[#4aaee0] flex items-center justify-center text-white text-xs font-bold">
+                  {post.authorName ? post.authorName.charAt(0).toUpperCase() : "A"}
+                </div>
+                <span>{post.authorName || "Admin"}</span>
+              </div>
+              <span>•</span>
+              <span>{formatDate(post.createdAt)}</span>
+              <span>•</span>
+              <div className="flex items-center gap-1">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <span>{post.viewCount} lượt xem</span>
+              </div>
+            </div>
+
+            {/* Main content card */}
+            <div className="backdrop-blur-sm rounded-2xl p-8 md:p-10">
               {/* Image */}
-              <img
-                src={post.image}
-                alt={post.title}
-                className="w-full h-64 md:h-80 object-cover rounded-xl mb-8"
-              />
+              {post.imageUrl && (
+                <img
+                  src={post.imageUrl}
+                  alt={post.title}
+                  className="w-full h-64 md:h-80 object-cover rounded-xl mb-8"
+                  onError={(e) => {
+                    e.target.src = "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1200";
+                  }}
+                />
+              )}
+
+              {/* Summary (nếu có) */}
+              {post.summary && (
+                <div className="text-white/80 text-lg italic mb-6 pb-6 border-b border-white/20">
+                  {post.summary}
+                </div>
+              )}
 
               {/* Text content */}
               <div className="text-white text-base md:text-lg leading-relaxed whitespace-pre-line">
                 {post.content}
               </div>
+
+              {/* Post type badge */}
+              <div className="mt-8 pt-6 border-t border-white/20">
+                <span className="inline-flex items-center px-4 py-2 bg-[#5cd9aa]/20 text-[#5cd9aa] rounded-full text-sm font-medium">
+                  {post.type === 1 ? "📰 Tin tức" : post.type === 2 ? "📝 Blog" : "📄 Bài viết"}
+                </span>
+              </div>
             </div>
 
-            {/* Optional: Share or action buttons */}
-            {/* <div className="mt-8 flex justify-center gap-4">
-              <button className="px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-xl hover:bg-white/20 transition">
-                Chia sẻ câu chuyện
+            {/* Share buttons (optional) */}
+            <div className="mt-8 flex justify-center gap-4">
+              <button className="px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-xl hover:bg-white/20 transition flex items-center gap-2">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                </svg>
+                Chia sẻ
               </button>
-            </div> */}
+            </div>
           </motion.div>
         </div>
       </div>
