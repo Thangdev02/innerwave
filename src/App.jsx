@@ -1,9 +1,6 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import Header from './layouts/Header'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import JourneyTracker from './pages/JourneyTracker'
 import BlogPage from './pages/BlogPage'
 import BlogDetail from './pages/BlogDetail'
@@ -20,22 +17,34 @@ import OrderManagement from './pages/admin/OrderManagement'
 import Dashboard from './pages/admin/Dashboard'
 import AdminChat from './pages/admin/AdminChat'
 
+// Layout cho public pages
+function PublicLayout({ children }) {
+  return (
+    <>
+      <Header />
+      {children}
+      <Footer />
+    </>
+  );
+}
+
 function App() {
   return (
     <BrowserRouter>
-        <Header/>
-
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        {/* Public Routes với Header & Footer */}
+        <Route path="/" element={<PublicLayout><HomePage /></PublicLayout>} />
+        <Route path="/journey-tracker" element={<PublicLayout><JourneyTracker /></PublicLayout>} />
+        <Route path="/inner-space" element={<PublicLayout><InnerSpace /></PublicLayout>} />
+        <Route path="/blog" element={<PublicLayout><BlogPage /></PublicLayout>} />
+        <Route path="/blog/:id" element={<PublicLayout><BlogDetail /></PublicLayout>} />
+        <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
+        <Route path="/shop" element={<PublicLayout><ShopNow /></PublicLayout>} />
+        
+        {/* Auth page - không có Header & Footer */}
         <Route path="/auth" element={<AuthPage />} />
-        <Route path="/journey-tracker" element={<JourneyTracker />} />
-        <Route path="/inner-space" element={<InnerSpace />} />
-        <Route path="/blog" element={<BlogPage />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/shop" element={<ShopNow />} />
-        <Route path="/blog/:id" element={<BlogDetail />} />
 
-        {/* Admin Routes */}
+        {/* Admin Routes - có layout riêng trong AdminLayout */}
         <Route
           path="/admin"
           element={
@@ -52,7 +61,6 @@ function App() {
           <Route path="chat" element={<AdminChat />} />
         </Route>
       </Routes>
-      <Footer/>
     </BrowserRouter>
   );
 }

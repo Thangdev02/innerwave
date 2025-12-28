@@ -6,14 +6,19 @@ const chatService = {
   // Gửi tin nhắn cho admin
   sendMessage: async (receiverId, message) => {
     try {
-      const response = await api.post('/Chat/send', {
-        receiverId: receiverId,
-        message: message,
-      });
+      const payload = {
+        ReceiverId: receiverId,  // ← PascalCase
+        Message: message,        // ← PascalCase, fix cao khả năng
+      };
+
+      // Log để debug
+      console.log('Sending payload to /Chat/send:', JSON.stringify(payload, null, 2));
+
+      const response = await api.post('/Chat/send', payload);
       return response.data;
     } catch (error) {
-      console.error('Error sending message:', error);
-      throw error.response?.data || error.message;
+      console.error('Error sending message:', error.response?.data || error);
+      throw error;
     }
   },
 
