@@ -38,8 +38,9 @@ const authService = {
         email: credentials.email,
         password: credentials.password,
       });
-      
-      // Lưu token và thông tin user vào cookies (hết hạn sau 7 ngày)
+  
+      console.log('Login response full:', response.data); // Log full response
+  
       if (response.data.token) {
         Cookies.set('token', response.data.token, { expires: 7, secure: true, sameSite: 'strict' });
         Cookies.set('user', JSON.stringify({
@@ -49,10 +50,16 @@ const authService = {
           lastName: response.data.lastName,
           roles: response.data.roles,
         }), { expires: 7, secure: true, sameSite: 'strict' });
+  
+        console.log('Token saved to cookie:', response.data.token.substring(0, 20) + '...'); // Log partial token
+        console.log('Check cookie now:', Cookies.get('token')); // Log ngay để xem có đọc được không
+      } else {
+        console.warn('No token in response');
       }
-      
+  
       return response.data;
     } catch (error) {
+      console.error('Login error:', error.response?.data || error);
       throw error.response?.data || error.message;
     }
   },

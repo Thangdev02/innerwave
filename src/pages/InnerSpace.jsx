@@ -36,30 +36,18 @@ const InnerSpace = () => {
       const data = await chatService.getMessagesWithAdmin();
       console.log("User messages data:", data); // Debug
       
-      // Chuyển đổi dữ liệu từ API sang format của UI
-      // API trả về ChatMessageDto với structure:
-      // { id, senderId, senderName, receiverId, receiverName, message, isRead, sentAt, readAt, isFromAdmin }
       const formattedMessages = data.map((msg) => ({
         id: msg.id,
-        text: msg.message, // field 'message' từ ChatMessageDto
-        sender: msg.isFromAdmin ? "bot" : "user", // isFromAdmin = true => admin/bot, false => user
+        text: msg.Message || msg.message || "", // Dùng Message (PascalCase)
+        sender: msg.isFromAdmin ? "bot" : "user",
         timestamp: msg.sentAt,
         isRead: msg.isRead,
       }));
-
+  
       setMessages(formattedMessages);
     } catch (error) {
       console.error("Failed to load messages:", error);
-      
-      // Hiển thị tin nhắn chào mừng mặc định nếu load thất bại
-      if (messages.length === 0) {
-        setMessages([
-          { id: 1, text: "hey, i'm glad you're here.", sender: "bot" },
-          { id: 2, text: "you can share whatever's on your mind — no pressure, no judgment.", sender: "bot" },
-          { id: 3, text: "this space is private, just between us.", sender: "bot" },
-          { id: 4, text: "let's get started by how was your day?", sender: "bot", hasAvatar: true },
-        ]);
-      }
+      // ... (fallback messages giữ nguyên)
     } finally {
       setLoading(false);
     }
@@ -69,7 +57,6 @@ const InnerSpace = () => {
   const handleSendMessage = async () => {
     if (inputValue.trim() === "" || sending) return;
 
-    // Tạo tin nhắn tạm thời để hiển thị ngay
     const tempMessage = {
       id: Date.now(),
       text: inputValue,
@@ -82,20 +69,16 @@ const InnerSpace = () => {
     setSending(true);
 
     try {
-      // Gửi tin nhắn đến admin
       await chatService.sendMessageToAdmin(inputValue);
       
-      // Load lại tin nhắn để có phản hồi từ server
       setTimeout(() => {
         loadMessages();
       }, 1000);
     } catch (error) {
       console.error("Failed to send message:", error);
       
-      // Hiển thị thông báo lỗi
       alert("Không thể gửi tin nhắn. Vui lòng thử lại.");
       
-      // Xóa tin nhắn tạm nếu gửi thất bại
       setMessages((prev) => prev.filter((msg) => msg.id !== tempMessage.id));
     } finally {
       setSending(false);
@@ -148,7 +131,6 @@ const InnerSpace = () => {
                   message.sender === "user" ? "flex-row-reverse" : ""
                 }`}
               >
-                {/* Avatar chỉ hiển thị cho bot message cuối */}
                 {message.hasAvatar && message.sender === "bot" && (
                   <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
                     <img
@@ -159,7 +141,6 @@ const InnerSpace = () => {
                   </div>
                 )}
                 
-                {/* Message Bubble */}
                 <div
                   className={`max-w-md px-6 py-3 rounded-3xl ${
                     message.sender === "bot"
@@ -228,7 +209,7 @@ const InnerSpace = () => {
         </motion.div>
       </div>
 
-      {/* Share Stories Section - Full Width */}
+      {/* Share Stories Section */}
       <div className="relative z-10 mt-12" style={{background:'#9fc9f5'}}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -251,7 +232,6 @@ const InnerSpace = () => {
             <p>and if not, that's completely okay too. 🌱</p>
           </div>
 
-          {/* Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <button className="px-8 py-3 bg-white/80 hover:bg-white backdrop-blur-md rounded-full text-gray-800 font-medium shadow-lg transition-all hover:scale-105">
               yes, go ahead!

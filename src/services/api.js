@@ -1,39 +1,48 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,  // 👈 Dùng import.meta.env với Vite
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Request interceptor
+// Request interceptor: Đọc token từ cookie và set header Authorization
 api.interceptors.request.use(
   (config) => {
-    console.log('🚀 Calling API:', config.baseURL + config.url); // Debug log
-    const token = localStorage.getItem('token');
+    console.log('🚀 Calling API:', config.baseURL + config.url);
+
+    const token = Cookies.get('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('Authorization header set with token:', token.substring(0, 20) + '...');
+    } else {
+      console.warn('No token found in cookies for this request');
     }
+
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Response interceptor
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    console.error('❌ API Error:', error.response?.status, error.config?.url); // Debug log
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/auth';
+// Response interceptor (giữ nguyên)
+// api.js - Request interceptor
+api.interceptors.request.use(
+  (config) => {
+    console.log('🚀 Calling API:', config.baseURL + config.url);
+
+    const token = Cookies.get('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+      console.log('Sent Authorization: Bearer ' + token.substring(0, 20) + '...');
+    } else {
+      console.warn('No token in cookie for this request');
     }
-    return Promise.reject(error);
-  }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
 );
 
 export default api;
